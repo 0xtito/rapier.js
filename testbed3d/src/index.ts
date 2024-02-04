@@ -12,6 +12,7 @@ import * as ConvexPolyhedron from "./demos/convexPolyhedron";
 import * as CCD from "./demos/ccd";
 import * as Platform from "./demos/platform";
 import * as CharacterController from "./demos/characterController";
+import * as Springs from "./demos/springs";
 
 import("@dimforge/rapier3d").then((RAPIER) => {
     let builders = new Map([
@@ -28,6 +29,7 @@ import("@dimforge/rapier3d").then((RAPIER) => {
         ["platform", Platform.initWorld],
         ["pyramid", Pyramid.initWorld],
         ["triangle mesh", Trimesh.initWorld],
+        ["springs", Springs.initWorld],
     ]);
     let testbed = new Testbed(RAPIER, builders);
     testbed.run();
