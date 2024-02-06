@@ -13,6 +13,7 @@ import * as CCD from "./demos/ccd";
 import * as Platform from "./demos/platform";
 import * as CharacterController from "./demos/characterController";
 import * as Springs from "./demos/springs";
+import * as Wreckingball from "./demos/rope";
 
 import("@dimforge/rapier3d").then((RAPIER) => {
     let builders = new Map([
@@ -30,6 +31,7 @@ import("@dimforge/rapier3d").then((RAPIER) => {
         ["pyramid", Pyramid.initWorld],
         ["triangle mesh", Trimesh.initWorld],
         ["springs", Springs.initWorld],
+        ["wrecking ball", Wreckingball.initWorld],
     ]);
     let testbed = new Testbed(RAPIER, builders);
     testbed.run();
