@@ -12,7 +12,12 @@ class SimulationParameters {
     backend: string;
     prevBackend: string;
     demo: string;
+    solverType: string;
     numSolverIters: number;
+    numInternalPGSIters: number;
+    numAdditionalFrictIters: number;
+    ccdSubsteps: number;
+    minIslandSize: number;
     running: boolean;
     stepping: boolean;
     debugInfos: boolean;
@@ -28,8 +33,13 @@ class SimulationParameters {
         this.backend = "rapier";
         this.prevBackend = "rapier";
         this.demo = "collision groups";
+        this.solverType = "SmallStepsPgs";
         this.numSolverIters = 4;
-        this.running = true;
+        this.numInternalPGSIters = 1;
+        this.numAdditionalFrictIters = 4;
+        this.ccdSubsteps = 1;
+        this.minIslandSize = 128;
+        this.running = false;
         this.stepping = false;
         this.debugRender = false;
         this.step = () => {};

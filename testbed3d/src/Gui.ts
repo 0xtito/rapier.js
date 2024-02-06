@@ -10,6 +10,8 @@ export interface DebugInfos {
     snapshotTime: number;
 }
 
+export type SolverType = "SmallStepsPgs" | "StandardPgs";
+
 export class Gui {
     stats: Stats;
     rapierVersion: string;
@@ -43,9 +45,43 @@ export class Gui {
                 testbed.switchToDemo(demo);
             });
         this.gui
-            .add(simulationParameters, "numSolverIters", 0, 20)
+            .add(simulationParameters, "solverType")
+            .options(["SmallStepsPgs", "StandardPgs"])
+            .listen()
+            .onChange((solverType: SolverType) => {
+                this.switchSolverType(
+                    simulationParameters,
+                    testbed,
+                    solverType,
+                );
+            });
+        this.gui // default is 4 for SmallStepsPgs and 1 for StandardPgs
+            .add(simulationParameters, "numSolverIters", 1, 40)
+            .step(1)
+            .listen()
+            .onChange((value: number) => {
+                testbed.world.numSolverIterations = value;
+            });
+
+        this.gui // default is 1
+            .add(simulationParameters, "numInternalPGSIters", 1, 40)
             .step(1)
             .listen();
+        this.gui // default is 4
+            .add(simulationParameters, "numAdditionalFrictIters", 1, 40)
+            .step(1)
+            .listen();
+
+        this.gui // default is 1
+            .add(simulationParameters, "ccdSubsteps", 1, 10)
+            .step(1)
+            .listen();
+
+        this.gui // default is 128
+            .add(simulationParameters, "minIslandSize", 128, 10000)
+            .step(1)
+            .listen();
+
         this.gui
             .add(simulationParameters, "debugInfos")
             .listen()
@@ -81,6 +117,25 @@ export class Gui {
         this.debugText.style.visibility = "visible";
         this.debugText.style.color = "#fff";
         document.body.appendChild(this.debugText);
+    }
+
+    switchSolverType(
+        simulationParameters: Testbed["parameters"],
+        testbed: Testbed,
+        solverType: SolverType,
+    ) {
+        simulationParameters.solverType = solverType;
+
+        // simulationParameters.numSolverIters =
+        //     solverType === "SmallStepsPgs" ? 4 : 1;
+
+        if (solverType === "SmallStepsPgs") {
+            simulationParameters.numSolverIters = 4;
+            testbed.world.switchToSmallStepsPgsSolver();
+        } else {
+            simulationParameters.numSolverIters = 1;
+            testbed.world.switchToStandardPgsSolver();
+        }
     }
 
     setDebugInfos(infos: DebugInfos) {
