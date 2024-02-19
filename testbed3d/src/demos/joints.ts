@@ -63,6 +63,7 @@ function createRevoluteJoints(
     origin: RAPIER.Vector3,
     num: number,
 ) {
+    console.log("\n----- createRevoluteJoints -----");
     let rad = 0.4;
     let shift = 2.0;
 
@@ -89,6 +90,9 @@ function createRevoluteJoints(
             new RAPIER.Vector3(origin.x, origin.y, z + shift),
         ];
 
+        console.log("currParent.translation()", currParent.translation());
+        console.log("positions", positions);
+
         let parents = [currParent, currParent, currParent, currParent];
 
         for (k = 0; k < 4; ++k) {
@@ -113,6 +117,7 @@ function createRevoluteJoints(
             RAPIER.JointData.revolute(
                 o,
                 new RAPIER.Vector3(0.0, 0.0, -shift),
+                // o,
                 z,
             ),
             RAPIER.JointData.revolute(
@@ -132,6 +137,15 @@ function createRevoluteJoints(
             ),
         ];
 
+        console.log(
+            "world.createImpulseJoint(revs[0], currParent, parents[0], true) values, ",
+            {
+                rev: revs[0],
+                rb1: currParent.translation(),
+                rb2: parents[0].translation(),
+            },
+        );
+
         world.createImpulseJoint(revs[0], currParent, parents[0], true);
         world.createImpulseJoint(revs[1], parents[0], parents[1], true);
         world.createImpulseJoint(revs[2], parents[1], parents[2], true);
@@ -139,6 +153,8 @@ function createRevoluteJoints(
 
         currParent = parents[3];
     }
+    console.log(`----- createRevoluteJoints - END -----`);
+    console.log("");
 }
 
 function createFixedJoints(
@@ -214,10 +230,13 @@ function createBallJoints(
     world: RAPIER.World,
     num: number,
 ) {
+    console.log(`\n----- createBallJoints - START -----`);
     let rad = 0.4;
     let shift = 1.0;
     let i, k;
     let parents = [];
+
+    let printed = false;
 
     for (k = 0; k < num; ++k) {
         for (i = 0; i < num; ++i) {
@@ -248,9 +267,30 @@ function createBallJoints(
                 let parent = parents[parents.length - 1];
                 let params = RAPIER.JointData.spherical(
                     o,
+
                     new RAPIER.Vector3(0.0, 0.0, -shift),
                 );
-                world.createImpulseJoint(params, parent, child, true);
+                // let params = RAPIER.JointData.spherical(
+                //     new RAPIER.Vector3(0.0, 0.0, -shift),
+                //     o,
+                // );
+
+                if (!printed) {
+                    console.log("Vertical Joint");
+                    console.log(
+                        `world.createImpulseJoint(params, parent, child, true) values, `,
+                        {
+                            params,
+                            parent: parent.translation(),
+                            child: child.translation(),
+                        },
+                    );
+                }
+
+                if (i === 3) printed = true;
+
+                // world.createImpulseJoint(params, parent, child, true);
+                // world.createImpulseJoint(params, child, parent, true);
             }
 
             // Horizontal joint.
@@ -261,12 +301,15 @@ function createBallJoints(
                     o,
                     new RAPIER.Vector3(-shift, 0.0, 0.0),
                 );
+
                 world.createImpulseJoint(params, parent, child, true);
             }
 
             parents.push(child);
         }
     }
+    console.log(`----- createBallJoints - END -----`);
+    console.log();
 }
 
 export function initWorld(RAPIER: RAPIER_API, testbed: Testbed) {

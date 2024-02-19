@@ -29,11 +29,28 @@ function createSpringJoints(
 
         let ballRigidBody = world.createRigidBody(ballRBDesc);
         let ballColliderDesc = RAPIER.ColliderDesc.ball(radius);
+
+        console.log(ballColliderDesc.contactForceEventThreshold);
         world.createCollider(ballColliderDesc, ballRigidBody);
 
         let dampingRatio = i / (num / 2);
         let damping = dampingRatio * criticalDamping;
         let anchor1 = new RAPIER.Vector3(ballPos.x, ballPos.y - 3, ballPos.z);
+
+        if (i === 0) {
+            console.log("first");
+            console.log("damping", damping);
+            console.log("stiffness", stiffness);
+            console.log("anchor1", anchor1);
+        }
+
+        if (i === num - 1) {
+            console.log("last");
+            console.log("damping", damping);
+            console.log("stiffness", stiffness);
+
+            console.log("anchor1", anchor1);
+        }
 
         let springJoint = RAPIER.JointData.spring(
             0,
