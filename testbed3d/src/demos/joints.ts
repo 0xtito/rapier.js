@@ -267,7 +267,6 @@ function createBallJoints(
                 let parent = parents[parents.length - 1];
                 let params = RAPIER.JointData.spherical(
                     o,
-
                     new RAPIER.Vector3(0.0, 0.0, -shift),
                 );
                 // let params = RAPIER.JointData.spherical(
@@ -289,7 +288,7 @@ function createBallJoints(
 
                 if (i === 3) printed = true;
 
-                // world.createImpulseJoint(params, parent, child, true);
+                world.createImpulseJoint(params, parent, child, true);
                 // world.createImpulseJoint(params, child, parent, true);
             }
 
